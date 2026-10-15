@@ -538,7 +538,7 @@ jobs:
         working-directory: ut
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          sed "s/@VERSION@/'${VERSION}'/" ut/manifest.json
+          sed "s/@VERSION@/'${VERSION}'/" manifest.json
           ARCH="${{ matrix.arch }}"
           [ "${{ matrix.arch }}" = "x86_64" ] && ARCH="amd64"
           ./build.sh "Volla Messages_*_${ARCH}.AppImage"
