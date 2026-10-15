@@ -1,5 +1,6 @@
 name: "release-tauri-app"
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
@@ -59,7 +60,7 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: [self-hosted, yolo]
+            runner: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             container: ubuntu:22.04
           - arch: aarch64
@@ -511,13 +512,13 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: [self-hosted, yolo]
+            runner: ubuntu-24.04
             target: x86_64-unknown-linux-gnu
             container: ubuntu:24.04
           - arch: aarch64
             runner: ubuntu-24.04-arm
             target: aarch64-unknown-linux-gnu
-            container: null
+            container: ubuntu:24.04
 
     steps:
       - uses: actions/checkout@v3
@@ -525,8 +526,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y dpkg-dev pipx apt-file binutils
-          pipx install clickable-ut
+          sudo apt-get install -y dpkg-dev apt-file binutils click gcc libglib2.0-dev pkg-config
 
       - name: Download ${{ matrix.arch }} AppImage
         uses: actions/download-artifact@v4
@@ -537,11 +537,11 @@ jobs:
       - name: Build click package
         working-directory: ut
         run: |
-          VERSION="${{ github.ref_name }}"
-          sed -i "s/^\"version\": \".*\"/\"version\": \"'${VERSION}'"/" ut/manifest.json
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed "s/@VERSION@/'${VERSION}'/" manifest.json
           ARCH="${{ matrix.arch }}"
           [ "${{ matrix.arch }}" = "x86_64" ] && ARCH="amd64"
-          ./build.sh "Volla Messages_${VERSION}_${ARCH}.AppImage"
+          ./build.sh "Volla Messages_*_${ARCH}.AppImage"
 
       - name: Upload click to release
         uses: AButler/upload-release-assets@v3.0

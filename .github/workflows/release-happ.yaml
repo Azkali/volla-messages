@@ -10,7 +10,7 @@ jobs:
   publish-happ:
     permissions:
       contents: write
-    runs-on: [self-hosted, yolo]
+    runs-on: ubuntu-24.04
     container:
       image: ubuntu:24.04
     outputs:
@@ -57,7 +57,7 @@ jobs:
           nix develop --no-update-lock-file --accept-flake-config --impure --command bash -c "npm install && npm run build:happ"
         env:
           CARGO_REGISTRIES_CARGO_HOSTED_TOKEN: ${{ secrets.VOLLA_NEXUS_TOKEN }}
-          
+
       - name: Retrieve version
         run: |
           echo "APP_VERSION=$(cat src-tauri/tauri.desktop.conf.json | grep -oP '(?<="version": ")[^"]*')" >> $GITHUB_OUTPUT
