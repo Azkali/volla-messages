@@ -545,6 +545,6 @@ jobs:
       - name: Upload click to release
         uses: AButler/upload-release-assets@v3.0
         with:
-          files: "ut/build/${{ matrix.arch }}-linux-gnu/app/*.click"
+          files: "ut/volla-messages.volla_*.click"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-id: ${{ needs.create-release.outputs.releaseId }}
