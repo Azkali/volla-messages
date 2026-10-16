@@ -1,6 +1,5 @@
 name: "release-tauri-app"
 on:
-  workflow_dispatch:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
@@ -538,10 +537,10 @@ jobs:
         working-directory: ut
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          sed "s/@VERSION@/'${VERSION}'/" manifest.json
+          sed -i "s/@VERSION@/${VERSION}/" manifest.json
           ARCH="${{ matrix.arch }}"
           [ "${{ matrix.arch }}" = "x86_64" ] && ARCH="amd64"
-          ./build.sh "Volla\ Messages_*_${ARCH}.AppImage"
+          ./build.sh Volla\ Messages_*_${ARCH}.AppImage
 
       - name: Upload click to release
         uses: AButler/upload-release-assets@v3.0
